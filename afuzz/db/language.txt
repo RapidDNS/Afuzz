@@ -1,0 +1,20 @@
+php==PHP/
+php==PHPSESSID
+php==File not found
+php==CAKEPHP
+php==Thinkphp
+php==WordPress
+java==Jetty
+java==tomcat
+java==Apache-Coyote
+java==JSESSIONID
+java==rememberMe=
+java==JENKINS
+java==hudson.model
+aspx==asp.net
+aspx==IIS/
+aspx==microsoft-iis
+aspx==s.SessID
+python==python/
+python==csrfmiddlewaretoken
+aspx==ASP.NET_SessionId

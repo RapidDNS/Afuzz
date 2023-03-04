@@ -1,0 +1,69 @@
+body==Bad Request
+body==bad request
+title==404
+body==域名已失效
+body==请核对您输入的页面地址是否正确
+title==页面不存在
+title==对不起，我出错了
+title==找不到页面
+body==hello world
+body==Page not found
+jsonkey==PathErr
+body==Your Current visit have been blocked
+jsonkey==errCode
+jsonkey==errorcode
+jsonkey==error
+jsonkey==ErrorCode
+body==<html>error url</html>
+body==//waf.tencent.com/501page.html
+body==cant find cgi proxy
+body==Not Found
+body==用户未登录
+body==error url
+body==InvalidReferer
+body==Hello, Lua
+body==invalid visit
+body==status":404
+body==url error
+body==No dispatch info found
+body==invalid page
+body==请求uri格式出错
+body==页面出错啦
+body==/404/search_children.js
+body==qzone.qq.com/gy/404/data.js
+body==访问的页面不存在
+body==404 Not Found
+body==Not Found ERROR
+body==<p>The server encountered an internal error or
+body==http://www.qq.com/babygohome/?pgv_ref=404
+body==<h1>410 Gone</h1>
+regex==controller.*not found
+body==<title>404 Page Not Found</title>
+body==You do not have permission to get URL
+body==<h1>Whoops, looks like something went wrong.</h1>
+body==invalid service url:
+body==当前页面不存在或已删除
+body==You don't have permission to access this page
+body==No direct script access allowed
+body==args not correct
+body==Controller Not Found
+body==http://appmedia.qq.com/media/flcdn/404.png
+body==我们无法找到您要查找的页面
+regex==无法找到.*页面
+body==找不到页面
+body==404 错误
+regex==404 error
+header==?aspxerrorpath=
+title==访问拦截
+body==501 Not Implemented
+body==您的请求已被该站点的安全策略拦截
+body==//imgcache.qq.com/qcloud/security/static/imgs/attackIntercept.svg
+body==腾讯T-Sec Web应用防火墙(WAF)
+body==ossweb-img.qq.com/images/game/404/gy/season-
+header==//waf.tencent.com/safe_block.html?u=
+body==Resource not found
+body==STATIC_RESOURCE_NOT_FOUND
+body==type=Not Found, status=404
+header==//www.baidu.com/search/error.html
+body==//waf.tencent.com/501page.html?u=
+title==Just a moment...

@@ -1,0 +1,30 @@
+title==Index of
+title==phpMyAdmin
+body==allow_url_fopen
+body==MemAdmin
+body==This is the default start page for the Resin server
+body==<title>Login to Cacti</title>
+body==<title>Zabbix</title>
+body==Dashboard [Jenkins]
+body==Graphite Browser
+body==http://www.atlassian.com/software/jira
+body==You have an error in your SQL syntax
+body==</b> on line <b>
+body==The proxy server could not handle the request
+regex==<title>.*后台.*</title>
+regex==<title>.*管理.*</title>
+title==Monitoring JavaMelody on
+title==Swagger UI
+title==Solr Admin
+body==JBoss Management Console
+title==CKEditor Samples
+body==UE.version
+title==Resin Admin Login for
+body==<script>alert(/test/);</script>
+body==<?php
+regex==debug\s*=\s*True
+body==Druid Stat Index
+body==druid monitor
+regex==jdbc:[a-z:]+://[A-Za-z0-9\.\-_:;=/@?,&]+
+regex==[a-z0-9_-]*:[a-z0-9_\-]+@github\.com*
+regex==<%
