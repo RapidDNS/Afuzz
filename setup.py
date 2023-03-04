@@ -22,7 +22,7 @@ setup(
     package_data={'afuzz': ['db/*']},
     include_package_data=True,
     classifiers=[
-        "Development Status :: 1 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python :: 3",
