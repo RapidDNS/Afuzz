@@ -62,6 +62,8 @@ class FuzzResult:
                 save_file.write(json.dumps(self.last_result))
 
     def save_table(self):
+        if not os.path.exists("result"):
+            os.mkdir("result")
         if self.last_result["total"] > 0:
             with open("result/%s_%d.txt" % (self.save_filename, self.last_result["total"]), "w", encoding="utf-8") \
                     as save_file:
