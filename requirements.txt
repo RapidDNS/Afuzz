@@ -1,5 +1,6 @@
-httpx
-asciistuff
-PrettyTable
-pandas
-tldextract
+httpx==0.23.3
+asciistuff==1.2.3
+prettytable==3.6.0
+pandas==1.5.3
+tldextract==3.4.0
+httpx[http2]

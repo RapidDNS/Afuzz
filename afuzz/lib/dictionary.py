@@ -58,7 +58,7 @@ class Dictionary:
     def generate(self, subdomain="", files=[], extensions=[], list_type="path"):
         wordlist = []
         if not files and list_type == "path":
-            for name in ["dict.txt", "common.txt", "sensitive.txt", "api.txt"]:
+            for name in ["dict.txt"]:
                 files.append(compatible_path(DATA + "/" + name))
 
         #files = [DATA + "/api.txt"]

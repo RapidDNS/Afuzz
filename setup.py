@@ -2,14 +2,10 @@
 from pathlib import Path
 
 from setuptools import find_packages, setup
-from afuzz.settings import VERSION
-
-with open("requirements.txt", encoding="utf-8") as req:
-    requirements = [r.rstrip() for r in req.readlines()]
 
 setup(
     name="Afuzz",
-    version=VERSION,
+    version="0.1.6",
     author="RapidDNS",
     author_email="skyj96455@gmail.com",
     description="Afuzz",
@@ -18,7 +14,14 @@ setup(
     url="https://github.com/rapiddns",
     packages=find_packages(),
     zip_safe=False,
-    install_requires=requirements,
+    install_requires=[
+        "httpx==0.23.3",
+        "httpx[http2]",
+        "asciistuff==1.2.3",
+        "prettytable==3.6.0",
+        "pandas==1.5.3",
+        "tldextract==3.4.0"
+    ],
     package_data={'afuzz': ['db/*']},
     include_package_data=True,
     classifiers=[
@@ -27,8 +30,10 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10"
+
     ],
     entry_points={"console_scripts": ["afuzz=afuzz:main"]},
-    python_requires=">=3.8",
     keywords=['afuzz', 'bug bounty', 'http', 'pentesting', 'security']
 )

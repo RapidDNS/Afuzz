@@ -54,7 +54,7 @@ class FuzzResult:
             print(self.table)
 
     def save(self):
-        if os.path.exists("result"):
+        if not os.path.exists("result"):
             os.mkdir("result")
         if self.last_result["total"] > 0:
             with open("result/%s_%d.json" % (self.save_filename, self.last_result["total"]), "w", encoding="utf-8") \

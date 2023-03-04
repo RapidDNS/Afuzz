@@ -4,7 +4,6 @@ Afuzz - An automated web path fuzzing tool
 Afuzz is an automated web path fuzzing tool for the Bug Bounty projects.
 
 ![Build](https://img.shields.io/badge/Built%20with-Python-Blue)
-![Release](https://img.shields.io/github/release/rapiddns/afuzz.svg)
 ![Stars](https://img.shields.io/github/stars/rapiddns/afuzz.svg)
 <a href="https://twitter.com/intent/tweet?text=afuzz-Afuzz is an automated web path fuzzing tool for the Bug Bounty projects.%20by%20@Rapiddns%0A%0Ahttps://github.com/rapiddns/afuzz">
     ![Tweet](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Frapiddns%2Fafuzz)
@@ -19,6 +18,7 @@ Afuzz is an automated web path fuzzing tool for the Bug Bounty projects.
 - filters random content in the page
 - judges 404 error pages in multiple ways
 - perform statistical analysis on the results after scanning to obtain the final result.
+- support HTTP2
 
 Installation
 ------------
