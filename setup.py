@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="Afuzz",
-    version="0.1.8",
+    version="0.1.9",
     author="RapidDNS",
     author_email="skyj96455@gmail.com",
     description="Afuzz",
@@ -20,7 +20,9 @@ setup(
         "asciistuff==1.2.3",
         "prettytable==3.6.0",
         "pandas==1.5.3",
-        "tldextract==3.4.0"
+        "tldextract==3.4.0",
+        "defusedxml==0.7.1",
+        "IPy==1.1"
     ],
     package_data={'afuzz': ['db/*']},
     include_package_data=True,

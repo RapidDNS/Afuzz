@@ -101,7 +101,10 @@ class Response:
         content += "33bb81a8-f625-4d38-8502-a6c192890ad2" + aabcd1llmzn"
         content += "64d56471-807d-41d8-a331-67e38c1bbd8c"
         '''
+
         content = self.content
+        if "application/" in self.type and "application/json" not in self.type:
+            return content
         for pattern in patterns:
             regex = re.compile(pattern, re.I)
             content = re.sub(regex, "", content)
@@ -118,4 +121,3 @@ class Response:
             content = content.replace(path, "")
 
         return content
-

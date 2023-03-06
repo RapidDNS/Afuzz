@@ -10,9 +10,9 @@ DEFAULT_HEADERS = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
     "accept": "*/*",
     "accept-encoding": "*",
-    "keep-alive": "timeout=15, max=1000",
+    "keep-alive": "timeout=30, max=1000",
     "cache-control": "max-age=0",
-    #"Range": "bytes=0-1024000"
+    "Range": "bytes=0-1024000"
 }
 
 current_dir = Path(__file__).resolve().parent.parent.parent

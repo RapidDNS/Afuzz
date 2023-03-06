@@ -31,6 +31,10 @@ class FuzzResult:
         url = target + path
         if url not in self._result:
             self._result.append(url)
+            if "application/" in response.type and "application/json" not in response.type:
+                length = response.length
+            else:
+                length = len(response.clean_page()),
             self.result.append(
                 {
                     "target": target,
@@ -38,7 +42,7 @@ class FuzzResult:
                     "status": response.status,
                     "redirect": response.redirect,
                     "title": title,
-                    "length": len(response.clean_page()),
+                    "length": length,
                     "content_type": response.type,
                     "lines": lines,
                     "words": words,

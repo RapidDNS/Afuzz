@@ -115,6 +115,8 @@ class Fuzzer:
         # all checks passed
         find_type = "check"
         mark = ""
+        print(url)
+        print(response.length)
         await self.send_msg("vuln", (find_type, url, path, response, mark, depth, target))
         return True
 
@@ -188,10 +190,8 @@ class Fuzzer:
             for _ in range(3):
                 try:
                     # read timeout
-
                     resp = Response(await self.session.get(url))
                     # self.processbar.update(self.process)
-
                     break
                 except TimeoutError:
                     timeout_count += 1
