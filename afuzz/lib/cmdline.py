@@ -15,10 +15,12 @@ def parse_args():
                                      usage='afuzz [options]')
 
     parser.add_argument('-u', '--url', help="Target URL", default="", required=True)
-    parser.add_argument('-o', '--output', help='Output file', default="result.txt", required=False)
-    parser.add_argument('-e', '--extensions', help="Extension list separated by commas (Example: php,aspx,jsp)", default=False, required=False)
+    parser.add_argument('-o', '--output', help='Output file', default="result", required=False)
+    parser.add_argument('-e', '--extensions', help="Extension list separated by commas (Example: php,aspx,jsp)",
+                        default=False, required=False)
     parser.add_argument('-t', '--thread', help='Number of threads', default=10)
     parser.add_argument('-d', '--depth', help='Maximum recursion depth', default=0)
+    parser.add_argument('-w', '--wordlist', help='wordlist', required=False)
 
     if len(sys.argv) == 1:
         sys.argv.append('-h')

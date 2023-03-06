@@ -15,6 +15,7 @@ class FuzzResult:
         self.table.title = self.target
         self.save_filename = self.target.replace(":", "_").replace("/", "_")
         self.last_result = {"result": [], "total": 0, "target": self.target}
+        self.output = args[1]
 
         self.table.field_names = ["target", "path", "status", "redirect", "title", "length", "content-type", "lines",
                                   "words", "type", "mark"]
@@ -54,18 +55,26 @@ class FuzzResult:
             print(self.table)
 
     def save(self):
-        if not os.path.exists("result"):
-            os.mkdir("result")
+        if not os.path.exists(self.output):
+            try:
+                os.mkdir(self.output)
+            except:
+                print("mkdir error")
+                return False
         if self.last_result["total"] > 0:
-            with open("result/%s_%d.json" % (self.save_filename, self.last_result["total"]), "w", encoding="utf-8") \
+            with open("%s_%d.json" % (self.output+"/"+self.save_filename, self.last_result["total"]), "w", encoding="utf-8") \
                     as save_file:
                 save_file.write(json.dumps(self.last_result))
 
     def save_table(self):
-        if not os.path.exists("result"):
-            os.mkdir("result")
+        if not os.path.exists(self.output):
+            try:
+                os.mkdir(self.output)
+            except:
+                print("mkdir error")
+                return False
         if self.last_result["total"] > 0:
-            with open("result/%s_%d.txt" % (self.save_filename, self.last_result["total"]), "w", encoding="utf-8") \
+            with open("%s_%d.txt" % (self.output+"/"+self.save_filename, self.last_result["total"]), "w", encoding="utf-8") \
                     as save_file:
                 save_file.write(self.target + "\n")
                 save_file.write(self.table.get_string())
@@ -97,8 +106,7 @@ class FuzzResult:
                 for data in result_list:
                     self.table.add_row([data["target"], data["path"], data["status"], data["redirect"], data["title"],
                                         data["length"], data["content_type"], data["lines"], data["words"],
-                                        data["type"],
-                                        data["mark"]])
+                                        data["type"], data["mark"]])
 
                 self.last_result["result"] += result_list
             self.last_result["total"] = len(self.last_result["result"])

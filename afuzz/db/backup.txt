@@ -159,3 +159,4 @@ ROOT.%ext%
 app.%ext%
 webapp.%ext%
 nginx.%ext%
+index.%ext%

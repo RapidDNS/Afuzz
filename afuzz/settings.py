@@ -4,7 +4,7 @@ import platform
 from afuzz.utils.common import compatible_path
 import afuzz.lib.config as mem
 
-VERSION = "0.1.6"
+#VERSION = "0.1.6"
 
 DEFAULT_HEADERS = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",

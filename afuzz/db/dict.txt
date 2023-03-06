@@ -3923,3 +3923,5 @@ static_api/
 preview/
 preview
 openapi.json
+index.%ext%.bak
+index.%ext%~

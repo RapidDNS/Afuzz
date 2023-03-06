@@ -341,7 +341,7 @@ options:
 How to use
 ---------------
 
-Some examples for how to use dirsearch - those are the most common arguments. If you need all, just use the **-h** argument.
+Some examples for how to use Afuzz - those are the most common arguments. If you need all, just use the **-h** argument.
 
 ### Simple usage
 ```

@@ -13,14 +13,15 @@ from afuzz.settings import PHP_EXTENSIONS, ASPX_EXTENSIONS, JAVA_EXTENSIONS, COM
 from afuzz.lib.response import Response
 from afuzz.settings import DOT_404, DEFAULT_404, FOLDER_404, WAF_404
 from afuzz.lib.result import FuzzResult
+from afuzz.utils.common import compatible_path
 
 
 class Fuzzer:
 
     def __init__(self, options, *args, **kwargs):
         self.options = options
-        self._target = options["target"]
-        self.depth = options["depth"]
+        self._target = options.get("target", "")
+        self.depth = options.get("depth", 0)
         self.headers = CaseInsensitiveDict(DEFAULT_HEADERS)
         self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False, timeout=60,
                                          http2=True)
@@ -36,7 +37,7 @@ class Fuzzer:
         self.targets_queue = asyncio.Queue()
         self.result_queue = asyncio.Queue()
         self.stop_flag = False
-        self.result = FuzzResult(self._target)
+        self.result = FuzzResult(self._target, options.get("output", "result/"))
         self.waf_404 = None
         self.scanner_queue = []
         self.stop_count = 0
@@ -187,8 +188,10 @@ class Fuzzer:
             for _ in range(3):
                 try:
                     # read timeout
+
                     resp = Response(await self.session.get(url))
                     # self.processbar.update(self.process)
+
                     break
                 except TimeoutError:
                     timeout_count += 1
@@ -254,7 +257,8 @@ class Fuzzer:
         print("Generating dictionary...")
         self.dict = Dictionary(subdomain=subdomain, extensions=exts)
         if not self.options["exts"]:
-            back_dict = Dictionary(subdomain=subdomain, files=[DATA + "/backup.txt"], extensions=BACKUP_EXTENSIONS)
+            back_dict = Dictionary(subdomain=subdomain, files=[compatible_path(DATA + "/backup.txt")],
+                                   extensions=BACKUP_EXTENSIONS)
             self.dict = list(set(self.dict.items() + back_dict.items()))
 
         self.total = len(self.dict)
@@ -292,7 +296,7 @@ class Fuzzer:
 
         print(self.result.table)
 
-        self.result.save_table()
+        # self.result.save_table()
         self.result.save()
 
         self.stop_flag = True
