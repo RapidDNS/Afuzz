@@ -12,7 +12,7 @@ class Dictionary:
     def __init__(self, **kwargs):
         self._index = 0
         self._items = self.generate(**kwargs)
-        self.type = kwargs.get("list_type",None)
+        self.type = kwargs.get("list_type", None)
     @property
     def index(self):
         return self._index
@@ -42,6 +42,10 @@ class Dictionary:
     def __len__(self):
         return len(self._items)
 
+    def __add__(self, other):
+        new_items = self._items + other._items
+        return self.__class__(list_type="add", items=new_items)
+
     def items(self):
         return self._items
 
@@ -55,8 +59,11 @@ class Dictionary:
                     result_list.append((key, value))
         return result_list
 
-    def generate(self, subdomain="", files=[], extensions=[], list_type="path"):
+    def generate(self, subdomain="", files=[], extensions=[], list_type="path",items=[]):
         wordlist = []
+        if list_type == "add":
+            wordlist = list(set(items))
+            return wordlist
         if not files and list_type == "path":
             for name in ["dict.txt"]:
                 files.append(compatible_path(DATA + "/" + name))

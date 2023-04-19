@@ -4,3 +4,4 @@ prettytable==3.6.0
 pandas==1.5.3
 tldextract==3.4.0
 httpx[http2]
+tqdm

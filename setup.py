@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="Afuzz",
-    version="0.1.9",
+    version="0.1.10",
     author="RapidDNS",
     author_email="skyj96455@gmail.com",
     description="Afuzz",

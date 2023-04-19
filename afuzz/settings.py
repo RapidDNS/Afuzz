@@ -40,11 +40,11 @@ PHP_EXTENSIONS = ["php", "php5", "php7", "inc"]
 
 JAVA_EXTENSIONS = ["do", "action", "jsp", "java", "jspx"]
 
-OTHER_EXTENSIONS = ["sh", "bat", "cgi"]
+OTHER_EXTENSIONS = ["sh", "bat", "cgi", "go"]
 
 WS_EXTENSIONS = ["wsdl", "asmx", "asdl", "jws"]
 
-PYTHON_EXTENSIONS = ["py"]
+PYTHON_EXTENSIONS = ["py", "pyc"]
 
 MEDIA_EXTENSIONS = [
     "webm", "mkv", "avi", "ts", "mov", "qt", "amv", "mp4", "m4p", "m4v", "mp3", "swf", "mpg", "mpeg", "jpg", "jpeg",

@@ -4,7 +4,6 @@ from urllib.parse import urlparse
 from prettytable import PrettyTable
 import pandas as pd
 
-
 class FuzzResult:
 
     def __init__(self, *args, **kwargs):
@@ -15,7 +14,7 @@ class FuzzResult:
         self.table.title = self.target
         self.save_filename = self.target.replace(":", "_").replace("/", "_")
         self.last_result = {"result": [], "total": 0, "target": self.target}
-        self.output = args[1]
+        self.opt_output = args[1]
 
         self.table.field_names = ["target", "path", "status", "redirect", "title", "length", "content-type", "lines",
                                   "words", "type", "mark"]
@@ -59,15 +58,15 @@ class FuzzResult:
             print(self.table)
 
     def save(self):
-        if not os.path.exists(self.output):
+        folder = "/".join(self.opt_output.split("/")[:-1])
+        if not os.path.exists(folder):
             try:
-                os.mkdir(self.output)
+                os.mkdir(folder)
             except:
                 print("mkdir error")
-                return False
+                #return False
         if self.last_result["total"] > 0:
-            with open("%s_%d.json" % (self.output+"/"+self.save_filename, self.last_result["total"]), "w", encoding="utf-8") \
-                    as save_file:
+            with open("%s.json" % self.opt_output, "w", encoding="utf-8") as save_file:
                 save_file.write(json.dumps(self.last_result))
 
     def save_table(self):
@@ -84,7 +83,7 @@ class FuzzResult:
                 save_file.write(self.table.get_string())
 
     def analysis(self):
-        print("Start analyzing scan results...")
+        print("\nStart analyzing scan results...")
         result_list = self.result
         if result_list:
             result_df = pd.DataFrame(result_list)

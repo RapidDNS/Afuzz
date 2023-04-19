@@ -160,3 +160,7 @@ app.%ext%
 webapp.%ext%
 nginx.%ext%
 index.%ext%
+.zip
+.tar.gz
+.tar
+.rar

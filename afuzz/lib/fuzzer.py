@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 import asyncio
 import httpx
 import time
-
+from tqdm import tqdm
 from afuzz.utils.common import CaseInsensitiveDict, is_ip
 from afuzz.settings import DEFAULT_HEADERS
 from afuzz.lib.dictionary import Dictionary
@@ -17,7 +17,6 @@ from afuzz.utils.common import compatible_path
 
 
 class Fuzzer:
-
     def __init__(self, options, *args, **kwargs):
         self.options = options
         self._target = options.get("target", "")
@@ -33,14 +32,15 @@ class Fuzzer:
         self.folder_404 = None
         self.dot_404 = None
         self.page_index = None
-        self.url_parse = urlparse(self._target)
+        #self.url_parse = urlparse(self._target)
         self.targets_queue = asyncio.Queue()
         self.result_queue = asyncio.Queue()
         self.stop_flag = False
-        self.result = FuzzResult(self._target, options.get("output", "result/"))
+        self.result = FuzzResult(self._target, options.get("output", ""))
         self.waf_404 = None
         self.scanner_queue = []
         self.stop_count = 0
+        self.prossbar = None
 
     async def send_msg(self, msg_type, msg_content):
         await self.result_queue.put({"type": msg_type, "content": msg_content})
@@ -92,7 +92,7 @@ class Fuzzer:
 
         if (not new_url.endswith("/") and (redirect == new_url + "/" or redirect == new_url_protocol + "/")) \
                 or redirect == "/" + path + "/":
-            print("%s 30x" % url)
+            tqdm.write("%s 30x" % url)
             find_type = "folder"
             mark = "30x"
             await self.send_msg("vuln", (find_type, url, path, response, mark, depth, target))
@@ -106,7 +106,7 @@ class Fuzzer:
             return False
 
         if new_url.endswith("/") and response.status == 403 and self.folder_404.status != 403:
-            print("%s 403" % url)
+            tqdm.write("%s 403" % url)
             find_type = "folder"
             mark = "403"
             await self.send_msg("vuln", (find_type, url, path, response, mark, depth, target))
@@ -115,8 +115,6 @@ class Fuzzer:
         # all checks passed
         find_type = "check"
         mark = ""
-        print(url)
-        print(response.length)
         await self.send_msg("vuln", (find_type, url, path, response, mark, depth, target))
         return True
 
@@ -131,13 +129,14 @@ class Fuzzer:
                 msg = await self.result_queue.get()
 
                 if msg["type"] == "msg":
-                    print(msg["content"])
+                    tqdm.write(msg["content"])
                 else:
                     find_type, url, path, resp, mark, depth, target = msg["content"]
                     # check depth
 
                     if self.depth > depth + 1 and find_type == "folder":
-                        print("%s (Add queue)" % url)
+                        tqdm.write("\n%s (Add queue)" % url)
+
                         await self.produce(url, depth=depth + 1)
                         # await self.scanner_queue.put((url, depth + 1))
                     self.result.add(resp, path, find_type, mark, target=target, depth=depth)
@@ -155,16 +154,20 @@ class Fuzzer:
         else:
             return True
 
-        if depth > 0:
-            print(target)
+        ##if depth > 0:
+        #    print(target)
         for path in self.dict:
             await self.targets_queue.put({"target": target, "path": path, "depth": depth})
+
         '''
         for i in range(self.options["threads"]):
             await self.targets_queue.put({"target": "stop", "path": "", "depth": depth})
         '''
         for _ in range(self.options["threads"]):
             await self.targets_queue.put({"target": "end", "path": "", "depth": depth})
+        #self.processbar.total = self.total - self.processbar.n + self.targets_queue.qsize()
+        self.processbar.total = self.targets_queue.qsize()
+
 
     async def consume(self):
         status_50x = 0
@@ -177,7 +180,7 @@ class Fuzzer:
                 for _ in range(2):
                     await asyncio.sleep(1)
 
-            if status_50x > 5:
+            if status_50x > 10:
                 await asyncio.sleep(0.1)
                 break
 
@@ -213,6 +216,54 @@ class Fuzzer:
 
             await self.check_vuln(resp, url, path, depth, target=target["target"])
 
+            #self.processbar.set_postfix({'path': path})
+            #self.processbar.set_postfix_str(f"path:{path:<30}")
+            self.processbar.update(1)
+            #self.targets_queue.task_done_callback = lambda t: self.processbar.update(1)
+            #self.targets_queue.task_done()
+
+    '''
+    async def consume(self):
+        status_50x = 0
+        timeout_count = 0
+        retry = False
+        depth = 0
+        target = self._target
+        while True:
+            if status_50x > 5 or timeout_count > 20:
+                await asyncio.sleep(0.1)
+                break
+            try:
+                if not retry:
+                    retry = False
+                    path = next(self.dict)
+                url = self._target + path
+                resp = Response(await self.session.get(url))
+                #print(url)
+            except TimeoutError:
+                timeout_count += 1
+                asyncio.sleep(2)
+                retry = True
+                continue
+            
+            except Exception as e:
+                retry = True
+                timeout_count += 1
+                self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False,
+                                                     timeout=60, http2=True)
+                resp = None
+                #import traceback
+                #traceback.print_exc()
+                continue
+            except StopIteration:
+                break
+            finally:
+                pass
+
+            #await self.check_vuln(resp, url, path, depth, target=target["target"])
+            await self.check_vuln(resp, url, path, depth, target)
+            self.prossbar.update(1)
+    '''
     def get_exts(self, custom=None):
         if custom:
             exts = custom
@@ -247,38 +298,44 @@ class Fuzzer:
         await self.send_msg("msg", "language: %s " % language)
 
         exts = self.get_exts(self.options["exts"])
-        if self.url_parse.netloc:
-            subdomain = self.url_parse.netloc.split(":", 1)[0]
+
+        if urlparse(self._target).netloc:
+            subdomain = urlparse(self._target).netloc.split(":", 1)[0]
             if is_ip(subdomain):
                 subdomain = ""
         else:
             subdomain = ""
 
         print("Generating dictionary...")
-        self.dict = Dictionary(subdomain=subdomain, extensions=exts)
+        dict = Dictionary(subdomain=subdomain, extensions=exts)
         if not self.options["exts"]:
             back_dict = Dictionary(subdomain=subdomain, files=[compatible_path(DATA + "/backup.txt")],
                                    extensions=BACKUP_EXTENSIONS)
-            self.dict = list(set(self.dict.items() + back_dict.items()))
+            #self.dict = list(set(self.dict.items() + back_dict.items()))
+            self.dict = dict + back_dict
+        else:
+            self.dict = dict
 
         self.total = len(self.dict)
-        # self.processbar = tqdm.tqdm(self.total)
+        #self.prossbar = tqdm(self.total)
+        self.processbar = tqdm(range(self.total), dynamic_ncols=True, desc="scanner")
 
-        print("A total of %d entries in the dictionary" % self.total)
+        tqdm.write("A total of %d entries in the dictionary" % self.total)
 
-        print("Start getting 404 error pages")
+        tqdm.write("Start getting 404 error pages")
         await self.get_404_page("file")
         await self.get_404_page("folder")
         await self.get_404_page("dot")
         await self.get_404_page("waf")
 
-        print("Get 404 page complete")
+        tqdm.write("Get 404 page complete")
 
-        print("Create scan tasks")
+        tqdm.write("Create scan tasks")
         asyncio.create_task(self.save_result())
 
         try:
             asyncio.create_task(self.produce())
+
             all_process = [self.consume() for _ in range(self.options["threads"])]
             await asyncio.gather(*all_process)
 
@@ -291,6 +348,7 @@ class Fuzzer:
             traceback.print_exc()
             await self.send_msg("msg", "[__main__.exception] %s %s" % (type(e), str(e)))
 
+        #self.prossbar.close()
         # Analyze scanned results, display and write final results after processing
         self.result.analysis()
 
