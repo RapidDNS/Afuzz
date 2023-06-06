@@ -41,6 +41,7 @@ class Fuzzer:
         self.scanner_queue = []
         self.stop_count = 0
         self.prossbar = None
+        self.wordlist = options.get("wordlist", "")
 
     async def send_msg(self, msg_type, msg_content):
         await self.result_queue.put({"type": msg_type, "content": msg_content})
@@ -307,14 +308,18 @@ class Fuzzer:
             subdomain = ""
 
         print("Generating dictionary...")
-        dict = Dictionary(subdomain=subdomain, extensions=exts)
-        if not self.options["exts"]:
-            back_dict = Dictionary(subdomain=subdomain, files=[compatible_path(DATA + "/backup.txt")],
-                                   extensions=BACKUP_EXTENSIONS)
-            #self.dict = list(set(self.dict.items() + back_dict.items()))
-            self.dict = dict + back_dict
-        else:
+        if self.wordlist:
+            dict = Dictionary(files=[self.wordlist], extensions=exts)
             self.dict = dict
+        else:
+            dict = Dictionary(subdomain=subdomain, extensions=exts)
+            if not self.options["exts"]:
+                back_dict = Dictionary(subdomain=subdomain, files=[compatible_path(DATA + "/backup.txt")],
+                                       extensions=BACKUP_EXTENSIONS)
+                #self.dict = list(set(self.dict.items() + back_dict.items()))
+                self.dict = dict + back_dict
+            else:
+                self.dict = dict
 
         self.total = len(self.dict)
         #self.prossbar = tqdm(self.total)

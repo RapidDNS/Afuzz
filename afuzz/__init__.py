@@ -38,6 +38,8 @@ def main():
         exts = []
 
     options = {"target": target, "output": output, "threads": threads, "exts": exts, "depth": int(args.depth)}
+    if args.wordlist:
+        options["wordlist"] = args.wordlist
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run(options))

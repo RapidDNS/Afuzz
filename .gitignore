@@ -3,3 +3,11 @@
 /.idea
 /venv/
 .DS_Store
+/dist/Afuzz-0.1.10.tar.gz
+/Afuzz.egg-info/dependency_links.txt
+/Afuzz.egg-info/entry_points.txt
+/Afuzz.egg-info/not-zip-safe
+/Afuzz.egg-info/PKG-INFO
+/Afuzz.egg-info/requires.txt
+/Afuzz.egg-info/SOURCES.txt
+/Afuzz.egg-info/top_level.txt

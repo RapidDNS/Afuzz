@@ -67,3 +67,5 @@ body==type=Not Found, status=404
 header==//www.baidu.com/search/error.html
 body==//waf.tencent.com/501page.html?u=
 title==Just a moment...
+title==invalid request
+title==访问被拦截
