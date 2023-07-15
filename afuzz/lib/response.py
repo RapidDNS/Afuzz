@@ -57,9 +57,16 @@ class Response:
     @property
     def length(self):
         try:
-            return int(self.headers.get("content-length"))
+            print(self.headers.get("content-length"))
+            print(int(self.headers.get("content-length")))
+            l = int(self.headers.get("content-length"))
+            #print(l)
         except TypeError:
-            return len(self.body)
+            l = len(self.body)
+            #print("typeerror")
+            #print(l)
+
+        return l
 
     @property
     def lines(self):

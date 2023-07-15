@@ -69,3 +69,4 @@ body==//waf.tencent.com/501page.html?u=
 title==Just a moment...
 title==invalid request
 title==访问被拦截
+regex==EVENT\s+ID:\d{16}

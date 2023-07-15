@@ -22,8 +22,14 @@ class Fuzzer:
         self._target = options.get("target", "")
         self.depth = options.get("depth", 0)
         self.headers = CaseInsensitiveDict(DEFAULT_HEADERS)
-        self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False, timeout=60,
-                                         http2=True)
+        self.proxy = options.get("proxy", None)
+        if self.proxy:
+            self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False, timeout=60,
+                                             http2=True, proxies=self.proxy)
+        else:
+            self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False, timeout=60,
+                                             http2=True)
+
         self.dict = []
         self.baddict = Dictionary(list_type="badstr")
         self.blacklist = Dictionary(list_type="blacklist")
@@ -36,12 +42,15 @@ class Fuzzer:
         self.targets_queue = asyncio.Queue()
         self.result_queue = asyncio.Queue()
         self.stop_flag = False
-        self.result = FuzzResult(self._target, options.get("output", ""))
+
+        fullpath = options.get("fullpath")
+        self.result = FuzzResult(self._target, options.get("output", ""), fullpath)
         self.waf_404 = None
         self.scanner_queue = []
         self.stop_count = 0
         self.prossbar = None
         self.wordlist = options.get("wordlist", "")
+
 
     async def send_msg(self, msg_type, msg_content):
         await self.result_queue.put({"type": msg_type, "content": msg_content})
@@ -160,13 +169,9 @@ class Fuzzer:
         for path in self.dict:
             await self.targets_queue.put({"target": target, "path": path, "depth": depth})
 
-        '''
-        for i in range(self.options["threads"]):
-            await self.targets_queue.put({"target": "stop", "path": "", "depth": depth})
-        '''
         for _ in range(self.options["threads"]):
             await self.targets_queue.put({"target": "end", "path": "", "depth": depth})
-        #self.processbar.total = self.total - self.processbar.n + self.targets_queue.qsize()
+
         self.processbar.total = self.targets_queue.qsize()
 
 
@@ -203,8 +208,14 @@ class Fuzzer:
                     continue
                 except Exception as e:
                     timeout_count += 1
-                    self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False,
-                                                     timeout=60, http2=True)
+                    if self.proxy:
+                        self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False,
+                                                         timeout=60, http2=True, proxies=self.proxy)
+                    else:
+                        self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False,
+                                                         timeout=60, http2=True)
+                    #self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False,
+                    #                                 timeout=60, http2=True)
                     resp = None
                     continue
 
@@ -217,54 +228,9 @@ class Fuzzer:
 
             await self.check_vuln(resp, url, path, depth, target=target["target"])
 
-            #self.processbar.set_postfix({'path': path})
-            #self.processbar.set_postfix_str(f"path:{path:<30}")
             self.processbar.update(1)
-            #self.targets_queue.task_done_callback = lambda t: self.processbar.update(1)
-            #self.targets_queue.task_done()
 
-    '''
-    async def consume(self):
-        status_50x = 0
-        timeout_count = 0
-        retry = False
-        depth = 0
-        target = self._target
-        while True:
-            if status_50x > 5 or timeout_count > 20:
-                await asyncio.sleep(0.1)
-                break
-            try:
-                if not retry:
-                    retry = False
-                    path = next(self.dict)
-                url = self._target + path
-                resp = Response(await self.session.get(url))
-                #print(url)
-            except TimeoutError:
-                timeout_count += 1
-                asyncio.sleep(2)
-                retry = True
-                continue
-            
-            except Exception as e:
-                retry = True
-                timeout_count += 1
-                self.session = httpx.AsyncClient(headers=self.headers, verify=False, follow_redirects=False,
-                                                     timeout=60, http2=True)
-                resp = None
-                #import traceback
-                #traceback.print_exc()
-                continue
-            except StopIteration:
-                break
-            finally:
-                pass
 
-            #await self.check_vuln(resp, url, path, depth, target=target["target"])
-            await self.check_vuln(resp, url, path, depth, target)
-            self.prossbar.update(1)
-    '''
     def get_exts(self, custom=None):
         if custom:
             exts = custom

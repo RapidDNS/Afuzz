@@ -15,9 +15,15 @@ class FuzzResult:
         self.save_filename = self.target.replace(":", "_").replace("/", "_")
         self.last_result = {"result": [], "total": 0, "target": self.target}
         self.opt_output = args[1]
+        self.fullpath = args[2]
 
-        self.table.field_names = ["target", "path", "status", "redirect", "title", "length", "content-type", "lines",
-                                  "words", "type", "mark"]
+        if self.fullpath:
+            self.table.field_names = ["url", "status", "redirect", "title", "length", "content-type", "lines",
+                                      "words", "type", "mark"]
+        else:
+            self.table.field_names = ["target", "path", "status", "redirect", "title", "length", "content-type", "lines",
+                                      "words", "type", "mark"]
+
         # self.row_title = ["target","path","status","title","length","lines","words","type","mark"]
 
     def add(self, response, path, find_type, mark, target=None, depth=0):
@@ -33,7 +39,8 @@ class FuzzResult:
             if "application/" in response.type and "application/json" not in response.type:
                 length = response.length
             else:
-                length = len(response.clean_page()),
+                length = len(response.clean_page())
+
             self.result.append(
                 {
                     "target": target,
@@ -92,6 +99,7 @@ class FuzzResult:
 
                 data_group = result_df.groupby(['type', 'status', 'length', 'lines'])
                 for dp, value in data_group.groups.items():
+                    #print(dp)
                     find_type, status, length, lines = dp
                     dp_len = len(value)
 
@@ -101,15 +109,28 @@ class FuzzResult:
                                 length == result_df["length"])]
                         for index, row in rows.iterrows():
                             total = total - 1
-                            self.table.add_row(row.to_list()[0:-3])
+                            print(row)
+                            row_list = row.to_list()
+                            if self.fullpath:
+                                self.table.add_row([row_list[-1]] + row_list[2:11])
+                            else:
+                                self.table.add_row(row.to_list()[0:-3])
+                            #self.table.add_row(row.to_list()[0:-3])
                             self.last_result["result"].append(row.to_dict())
 
             else:
                 # ["path", "redirect", "status", "title", "length","content-type", "lines", "words", "type", "mark"]
                 for data in result_list:
-                    self.table.add_row([data["target"], data["path"], data["status"], data["redirect"], data["title"],
-                                        data["length"], data["content_type"], data["lines"], data["words"],
-                                        data["type"], data["mark"]])
+
+                    if self.fullpath:
+                        self.table.add_row([data["url"], data["status"], data["redirect"], data["title"],
+                                            data["length"], data["content_type"], data["lines"], data["words"],
+                                            data["type"], data["mark"]])
+                    else:
+                        self.table.add_row(
+                            [data["target"], data["path"], data["status"], data["redirect"], data["title"],
+                             data["length"], data["content_type"], data["lines"], data["words"],
+                             data["type"], data["mark"]])
 
                 self.last_result["result"] += result_list
             self.last_result["total"] = len(self.last_result["result"])
