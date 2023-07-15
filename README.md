@@ -314,11 +314,16 @@ Options
 -------
 
 ```
-  ##   ##### ##  # #### ####
- # ##   ##   ##  #   ##   ##
- ####   #### ##  #  ##   ##
- # ##   ##   ##  # ##   ##
-## ### ####   ###  #### ####
+    #     ###### ### ###  ######  ######
+    #      #   #  #   #   #   #   #   #
+   # #     # #    #   #   #  #    #  #
+   # #     ###    #   #     #       #
+  #  #    #  #   #   #      #       #
+  #####   #      #   #     #  #    #  #
+ #    #   #      #   #    #   #   #   #
+###  ### ###      ###    ######  ######
+
+
 
 usage: afuzz [options]
 
@@ -336,6 +341,11 @@ options:
                         Number of threads
   -d DEPTH, --depth DEPTH
                         Maximum recursion depth
+  -w WORDLIST, --wordlist WORDLIST
+                        wordlist
+  -f, --fullpath        fullpath
+  -p PROXY, --proxy PROXY
+                        proxy, (ex:http://127.0.0.1:8080)
 ```
 
 How to use
